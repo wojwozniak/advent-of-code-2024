@@ -2,3 +2,7 @@ Cargo.lock
 /*/target
 main.exe
 main.pdb
+
+# Added by cargo
+
+/target
