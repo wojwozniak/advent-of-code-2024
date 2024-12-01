@@ -1,18 +1,24 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 
-pub fn problem01() -> Result<(), ()> {
-    let path = "inputs/input01.txt";
+/*
+   Problem 01 of 2024 advent of code
+   https://adventofcode.com/2024/day/1
+*/
+pub fn problem01() -> Result<i32, ()> {
+    // Read file
+    let path = "../inputs/input01.txt";
 
     let file: File = File::open(&path).unwrap();
     let reader: io::BufReader<File> = io::BufReader::new(file);
 
+    // Initialize vectors to store read numbers
     let mut vec1: Vec<i32> = Vec::new();
     let mut vec2: Vec<i32> = Vec::new();
 
+    // Read lines, cast into numbers, push to vectors
     for line in reader.lines() {
         let line: String = line.unwrap();
-        //println!("{}", line);
 
         let numbers: Vec<i32> = line
             .split_whitespace()
@@ -27,12 +33,18 @@ pub fn problem01() -> Result<(), ()> {
         }
     }
 
+    // Sort vectors
     vec1.sort_unstable();
     vec2.sort_unstable();
 
+    // Calculate the answer
+    let mut difference_sum: i32 = 0;
+
     for (a, b) in vec1.iter().zip(vec2.iter()) {
-        println!("({}, {})", a, b);
+        let diff = a.abs_diff(*b) as i32;
+        difference_sum += diff;
     }
 
-    Ok(())
+    println!("{}", difference_sum);
+    Ok(difference_sum)
 }
