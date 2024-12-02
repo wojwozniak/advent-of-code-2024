@@ -1,15 +1,18 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 
-pub fn problem02() -> Result<i32, ()> {
+pub fn problem02() -> Result<(i32, i32), ()> {
     let path = "../inputs/input02.txt";
 
     // Open the file
     let file: File = File::open(&path).expect("Failed to open file");
     let reader: io::BufReader<File> = io::BufReader::new(file);
 
-    // Store amount of safe reports
+    // Store amount of safe reports (for first part, no tolerance)
     let mut safe_reports: i32 = 0;
+
+    // Store answer for second part, where at most one error can be tolerated
+    let mut safe_reports_dampered: i32 = 0;
 
     // Process each line
     for line in reader.lines() {
@@ -24,7 +27,13 @@ pub fn problem02() -> Result<i32, ()> {
         // Print input values
         // println!("Numbers in line: {:?}", numbers);
 
-        safe_reports += if is_strictly_inc_or_dec(numbers) {
+        safe_reports += if is_strictly_inc_or_dec(&numbers, false) {
+            1
+        } else {
+            0
+        };
+
+        safe_reports_dampered += if is_strictly_inc_or_dec(&numbers, true) {
             1
         } else {
             0
@@ -32,29 +41,41 @@ pub fn problem02() -> Result<i32, ()> {
     }
 
     println!("{}", safe_reports);
-    Ok(safe_reports)
+    println!("{}", safe_reports_dampered);
+    Ok((safe_reports, safe_reports_dampered))
 }
 
-// Function checking task requirement on every line
-fn is_strictly_inc_or_dec(numbers: Vec<i32>) -> bool {
+// Function checking strict increasing or decreasing (by step of 1 - 3)
+fn is_strictly_inc_or_dec(numbers: &Vec<i32>, tolerate_error: bool) -> bool {
     if numbers.len() < 2 {
         return true;
     }
 
-    // We determine if we got a increasing or decreasing trend.
-    // Then check for correct difference on every 2 item window
-    let (first, second) = (numbers[0], numbers[1]);
-    if second > first {
-        for window in numbers.windows(2) {
-            let (prev, curr) = (window[0], window[1]);
-            if !correct_difference(prev, curr) {
+    // Determine the trend
+    let increasing = numbers[1] > numbers[0];
+
+    for window in numbers.windows(2) {
+        let (prev, curr) = (window[0], window[1]);
+
+        // Check difference validity
+        let is_valid = if increasing {
+            correct_difference(prev, curr)
+        } else {
+            correct_difference(curr, prev)
+        };
+
+        if !is_valid {
+            if tolerate_error {
+                // Attempt to remove the offending item and call the function recursively
+                for i in 0..numbers.len() {
+                    let mut new_numbers = numbers.clone();
+                    new_numbers.remove(i);
+                    if is_strictly_inc_or_dec(&new_numbers, false) {
+                        return true; // Return true if the modified array is valid
+                    }
+                }
                 return false;
-            }
-        }
-    } else {
-        for window in numbers.windows(2) {
-            let (prev, curr) = (window[0], window[1]);
-            if !correct_difference(curr, prev) {
+            } else {
                 return false;
             }
         }
