@@ -1,6 +1,10 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 
+/*
+   Problem 02 of 2024 Advent of Code
+   https://adventofcode.com/2024/day/2
+*/
 pub fn problem02() -> Result<(i32, i32), ()> {
     let path = "../inputs/input02.txt";
 
