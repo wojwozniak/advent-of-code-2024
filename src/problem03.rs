@@ -6,25 +6,6 @@ use std::io::{BufRead, BufReader};
    Problem 03 of 2024 Advent of Code
    https://adventofcode.com/2024/day/3
 */
-
-// Function to process the mul() statements and return their sum
-fn calculate_mul_sum(lines: Vec<String>, re: &Regex) -> i64 {
-    let mut sum_of_mults = 0;
-
-    // Iterate over the subset of lines passed to this function
-    for line in lines {
-        for cap in re.captures_iter(&line) {
-            let n1: i64 = cap[1].parse().unwrap();
-            let n2: i64 = cap[2].parse().unwrap();
-
-            // Add their product to the sum
-            sum_of_mults += n1 * n2;
-        }
-    }
-
-    sum_of_mults
-}
-
 pub fn problem03() -> Result<i64, ()> {
     let path = "../inputs/input03.txt";
 
@@ -77,4 +58,22 @@ pub fn problem03() -> Result<i64, ()> {
     // Return the final sum
     println!("{}", total_sum);
     Ok(total_sum)
+}
+
+// Function to process the mul() statements and return their sum
+fn calculate_mul_sum(lines: Vec<String>, re: &Regex) -> i64 {
+    let mut sum_of_mults = 0;
+
+    // Iterate over the subset of lines passed to this function
+    for line in lines {
+        for cap in re.captures_iter(&line) {
+            let n1: i64 = cap[1].parse().unwrap();
+            let n2: i64 = cap[2].parse().unwrap();
+
+            // Add their product to the sum
+            sum_of_mults += n1 * n2;
+        }
+    }
+
+    sum_of_mults
 }
