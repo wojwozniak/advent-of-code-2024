@@ -9,3 +9,4 @@ This repository contains my solutions to the Advent of Code 2024 challenges, wri
 | 01  | [Problem 1](https://adventofcode.com/2024/day/1) | [Solution](src/problem01.rs) |
 | 02  | [Problem 2](https://adventofcode.com/2024/day/2) | [Solution](src/problem02.rs) |
 | 03  | [Problem 3](https://adventofcode.com/2024/day/3) | [Solution](src/problem03.rs) |
+| 04  | [Problem 4](https://adventofcode.com/2024/day/3) | [Solution](src/problem04.rs) |
