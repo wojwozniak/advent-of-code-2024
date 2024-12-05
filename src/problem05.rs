@@ -6,14 +6,62 @@ use std::io::{BufRead, BufReader};
    Problem 05 of 2024 Advent of Code
    https://adventofcode.com/2024/day/5
 */
-pub fn problem05() -> Result<i32, ()> {
+pub fn problem05() -> Result<(i32, i32), ()> {
     let (hashmap_with_sorted_arrays, pages_to_check) = get_data(false);
-    let (sum_task1, illegal_page_indexes) =
+    let (sum, illegal_page_indexes) =
         calculate_sum_of_correct(&hashmap_with_sorted_arrays, &pages_to_check);
 
-    println!("Sum: {}", sum_task1);
-    println!("Illegal page indexes: {:?}", illegal_page_indexes);
-    Ok(sum_task1)
+    let illegal_pages: Vec<Vec<i32>> = illegal_page_indexes
+        .iter()
+        .map(|&index| pages_to_check[index].clone())
+        .collect();
+
+    let fixed_sum = calculate_sum_of_fixed(&hashmap_with_sorted_arrays, &illegal_pages);
+
+    println!("First sum: {}", sum);
+    println!("Fixed sum: {}", fixed_sum);
+    Ok((sum, fixed_sum))
+}
+
+/// Function calculating sum of rows that were found illegal in the first task by
+/// fixing them. I assume there won't be rules that would create unfixable rows
+/// (so f.e. 4 can't be before 5, 5 can't be before 4)
+fn calculate_sum_of_fixed(
+    hashmap_with_sorted_arrays: &HashMap<i32, Vec<i32>>,
+    illegal_pages: &Vec<Vec<i32>>,
+) -> i32 {
+    let mut total_sum = 0;
+
+    for row in illegal_pages {
+        let mut array_so_far = Vec::new();
+
+        for &current_value in row {
+            if array_so_far.is_empty() {
+                array_so_far.push(current_value);
+                continue;
+            }
+
+            if let Some(forbidden_values) = hashmap_with_sorted_arrays.get(&current_value) {
+                let mut insert_index = array_so_far.len();
+                for &forbidden in forbidden_values {
+                    if let Some(pos) = array_so_far.iter().position(|&x| x == forbidden) {
+                        insert_index = insert_index.min(pos);
+                    }
+                }
+
+                array_so_far.insert(insert_index, current_value);
+            } else {
+                array_so_far.push(current_value);
+            }
+        }
+
+        if array_so_far.len() == row.len() {
+            let middle_index = array_so_far.len() / 2;
+            total_sum += array_so_far[middle_index];
+        }
+    }
+
+    total_sum
 }
 
 /// Main part of the first part - calculating sum of middle values. We also get
