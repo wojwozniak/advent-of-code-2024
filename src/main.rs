@@ -7,7 +7,7 @@ mod problem04;
 mod problem05;
 mod problem06;
 
-fn main() -> Result<(), ()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     //problem01::problem01()?;
     //problem02::problem02()?;
     //problem03::problem03()?;
