@@ -14,7 +14,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //problem03::problem03().map_err(|_| "problem03 failed")?;
     //problem04::problem04().map_err(|_| "problem04 failed")?;
     //problem05::problem05().map_err(|_| "problem05 failed")?;
-    //problem06::problem06().map_err(|_| "problem05 failed")?;
+    //problem06::problem06().map_err(|_| "problem06 failed")?;
     problem07::problem07().map_err(|_| "problem07 failed")?;
     Ok(())
 }
