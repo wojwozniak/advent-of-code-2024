@@ -1,3 +1,4 @@
+use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io::{self, BufRead};
 
@@ -7,14 +8,87 @@ use std::io::{self, BufRead};
 */
 pub fn problem08() -> Result<i64, ()> {
     let path = "../inputs/input08.txt";
+    let file = File::open(&path).unwrap();
+    let reader = io::BufReader::new(file);
 
-    let file: File = File::open(&path).unwrap();
-    let reader: io::BufReader<File> = io::BufReader::new(file);
+    let mut data: Vec<Vec<char>> = Vec::new();
+    let mut line_count = 0;
+    let mut max_line_length = 0;
 
     for line in reader.lines() {
-        let line: String = line.unwrap();
+        let line = line.unwrap();
+        line_count += 1;
+        max_line_length = max_line_length.max(line.len());
+
+        data.push(line.chars().collect());
     }
 
-    println!("{}", 0);
-    Ok(0)
+    let antennas = parse_antennas(&data);
+    let antinodes = calculate_antinodes(&antennas, max_line_length as i32, line_count as i32);
+
+    println!("{}", antinodes.len());
+    Ok(antinodes.len() as i64)
+}
+
+/// Function to calculate the number of antinodes
+pub fn calculate_antinodes(
+    antennas: &Vec<(i32, i32, char)>,
+    width: i32,
+    height: i32,
+) -> HashSet<(i32, i32)> {
+    let mut antinodes = HashSet::new();
+
+    // Group antennas by frequency
+    let mut freq_groups: HashMap<char, Vec<(i32, i32)>> = HashMap::new();
+    for &(x, y, freq) in antennas {
+        freq_groups.entry(freq).or_default().push((x, y));
+    }
+
+    // Iterate over frequency groups and calculate antinodes
+    for group in freq_groups.values() {
+        for i in 0..group.len() - 1 {
+            for j in i + 1..group.len() {
+                let (x1, y1) = group[i];
+                let (x2, y2) = group[j];
+
+                // Calculate the vector between the two antennas
+                let dx = x2 - x1;
+                let dy = y2 - y1;
+
+                // Calculate the two possible antinode positions
+                let antinode1 = (x1 - dx, y1 - dy);
+                let antinode2 = (x2 + dx, y2 + dy);
+
+                // Check and add the antinodes if they are within bounds
+                if check_and_add(antinode1.0, antinode1.1, width, height) {
+                    antinodes.insert(antinode1);
+                }
+                if check_and_add(antinode2.0, antinode2.1, width, height) {
+                    antinodes.insert(antinode2);
+                }
+            }
+        }
+    }
+
+    antinodes
+}
+
+/// Auxiliary function checking correctness of position
+fn check_and_add(x: i32, y: i32, width: i32, height: i32) -> bool {
+    x >= 0 && x < width && y >= 0 && y < height
+}
+
+/// Auxiliary function returning vectors with positions and char of antennas
+fn parse_antennas(data: &[Vec<char>]) -> Vec<(i32, i32, char)> {
+    let mut antennas = vec![];
+
+    for (y, row) in data.iter().enumerate() {
+        for (x, &ch) in row.iter().enumerate() {
+            if ch != '.' && ch != ' ' {
+                antennas.push((x as i32, y as i32, ch));
+            }
+        }
+    }
+
+    antennas
 }
