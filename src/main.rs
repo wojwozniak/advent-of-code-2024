@@ -9,6 +9,7 @@ mod problem06;
 mod problem07;
 mod problem08;
 mod problem09;
+mod problem11;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     //problem01::problem01().map_err(|_| "problem01 failed")?;
@@ -19,6 +20,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     //problem06::problem06().map_err(|_| "problem06 failed")?;
     //problem07::problem07().map_err(|_| "problem07 failed")?;
     //problem08::problem08().map_err(|_| "problem08 failed")?;
-    problem09::problem09().map_err(|_| "problem09 failed")?;
+    //problem09::problem09().map_err(|_| "problem09 failed")?;
+    problem11::problem11().map_err(|_| "problem11 failed")?;
+
     Ok(())
 }
