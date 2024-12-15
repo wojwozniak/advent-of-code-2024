@@ -8,3 +8,7 @@ tempCodeRunnerFile.rs
 
 /target
 /inputs
+
+# enable fast manual checks
+*.pdb
+*.exe
