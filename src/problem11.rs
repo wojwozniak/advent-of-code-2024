@@ -22,13 +22,20 @@ pub fn problem11() -> Result<i64, ()> {
             .collect();
     }
 
-    for _ in 0..25 {
+    let output = n_times_runner(numbers, 5);
+
+    println!("{}", output);
+    Ok(output as i64)
+}
+
+/// Function to run step of main n timess
+fn n_times_runner(mut numbers: Vec<i64>, n: i32) -> i64 {
+    for _ in 0..n {
         //println!("{:?}", numbers);
         numbers = process_numbers(numbers);
+        println!("{:?}", numbers);
     }
-
-    println!("{}", numbers.len());
-    Ok(numbers.len() as i64)
+    numbers.len() as i64
 }
 
 /// Single step of first part of task
@@ -73,15 +80,4 @@ fn split_number(num: i64) -> (i64, i64) {
 fn has_even_digits(num: i64) -> bool {
     let digit_count = (num.abs() as f64).log10().floor() as u32 + 1;
     digit_count % 2 == 0
-}
-
-/* */
-fn main() {
-    let mut numbers: Vec<i64> = vec![125, 17];
-    for _ in 0..25 {
-        //println!("{:?}", numbers);
-        numbers = process_numbers(numbers);
-        //println!("{:?}", numbers);
-        println!("{}", numbers.len())
-    }
 }
